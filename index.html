@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MindForge Academy — Think Deeper. See Further. Learn Smarter.</title>
+<meta name="description" content="An interactive educational platform for physics, math, logic, observation, strategy and astronomy. Six subjects, five live simulations, daily challenges." />
+<meta name="theme-color" content="#0a0e1a" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300d4ff'/%3E%3Cstop offset='1' stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-family='Arial,sans-serif' font-weight='900' font-size='56' fill='%230a0e1a' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<meta property="og:title" content="MindForge Academy — Think Deeper. See Further. Learn Smarter." />
+<meta property="og:description" content="An interactive learning platform: six subjects, five live simulations, daily challenges and a local XP dashboard." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ---------- Design tokens ---------- */
+:root{
+  --bg:#0a0e1a;
+  --bg-2:#0d1326;
+  --surface: rgba(255,255,255,0.04);
+  --surface-2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.10);
+  --text:#e6ecff;
+  --muted:#9aa6c7;
+  --blue:#00d4ff;
+  --violet:#7c3aed;
+  --gold:#f59e0b;
+  --green:#22d3a2;
+  --red:#ff5577;
+  --grad: linear-gradient(135deg,#00d4ff 0%,#7c3aed 100%);
+  --grad-gold: linear-gradient(135deg,#f59e0b 0%,#ff5577 100%);
+  --shadow-glow: 0 0 24px rgba(0,212,255,.25), 0 0 48px rgba(124,58,237,.18);
+  --radius: 16px;
+  --transition: .25s cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: radial-gradient(1200px 800px at 80% -10%, rgba(124,58,237,.15), transparent 60%),
+              radial-gradient(1000px 700px at -10% 30%, rgba(0,212,255,.10), transparent 55%),
+              var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:8px}
+
+/* Particle bg */
+#bgCanvas{
+  position:fixed;inset:0;z-index:-1;width:100%;height:100%;
+  background: transparent;
+}
+
+/* ---------- Nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  background: rgba(10,14,26,.65);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  max-width:1280px;margin:0 auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.4px}
+.logo-mark{
+  width:36px;height:36px;border-radius:10px;position:relative;
+  background: var(--grad);
+  box-shadow: var(--shadow-glow);
+  display:grid;place-items:center;color:#0a0e1a;font-weight:900;
+  animation: spinSlow 12s linear infinite;
+}
+.logo-mark::after{
+  content:"";position:absolute;inset:-3px;border-radius:12px;
+  background:conic-gradient(from 0deg, transparent 0 280deg, #00d4ff 320deg, transparent 360deg);
+  z-index:-1;filter:blur(6px);opacity:.7;
+  animation: spinSlow 6s linear infinite;
+}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.logo span{font-size:18px}
+.logo small{color:var(--muted);font-weight:500;margin-left:6px;font-size:12px}
+.nav-links{display:flex;gap:6px}
+.nav-links a{
+  padding:8px 14px;border-radius:10px;font-size:14px;color:var(--muted);
+  transition:var(--transition);position:relative;
+}
+.nav-links a:hover{color:var(--text);background:var(--surface)}
+.nav-cta{
+  background:var(--grad);color:#06121b;font-weight:700;padding:10px 16px;border-radius:10px;
+  box-shadow: var(--shadow-glow);transition:var(--transition);font-size:14px;
+}
+.nav-cta:hover{transform:translateY(-1px)}
+.hamburger{display:none;width:42px;height:42px;border-radius:10px;background:var(--surface);align-items:center;justify-content:center}
+.hamburger span{width:20px;height:2px;background:var(--text);position:relative;display:block;transition:var(--transition)}
+.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--text);transition:var(--transition)}
+.hamburger span::before{top:-6px}.hamburger span::after{top:6px}
+
+@media (max-width: 880px){
+  .nav-links{
+    position:fixed;inset:64px 12px auto 12px;flex-direction:column;
+    background: rgba(13,19,38,.96);backdrop-filter: blur(16px);
+    border:1px solid var(--border);border-radius:14px;padding:12px;
+    transform:translateY(-20px);opacity:0;pointer-events:none;transition:var(--transition);
+  }
+  .nav-links.open{transform:translateY(0);opacity:1;pointer-events:auto}
+  .hamburger{display:flex}
+  .nav-cta{display:none}
+}
+
+/* ---------- Layout ---------- */
+section{padding: 96px 24px;max-width:1280px;margin:0 auto;position:relative}
+.eyebrow{
+  display:inline-block;font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--blue);padding:6px 12px;border:1px solid rgba(0,212,255,.3);border-radius:999px;
+  background:rgba(0,212,255,.06);margin-bottom:16px;
+}
+h1,h2,h3{font-family:"Space Grotesk","Inter",sans-serif;letter-spacing:-.02em;margin:0 0 12px}
+h2{font-size: clamp(28px, 4vw, 44px); line-height:1.1}
+h3{font-size:20px}
+.section-title{margin-bottom:8px}
+.section-sub{color:var(--muted);max-width:680px;margin:0 0 40px}
+
+/* ---------- Hero ---------- */
+.hero{
+  min-height: 92vh; min-height: 92dvh;
+  display:flex;align-items:center;position:relative;overflow:hidden;
+  padding-top: 40px;
+}
+.hero-grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:64px;align-items:center;width:100%}
+.hero h1{
+  font-size: clamp(40px, 6.5vw, 84px);
+  line-height:1.02;font-weight:800;margin-bottom:20px;
+}
+.hero h1 .gradient{
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  display:inline-block;min-width: 6ch;
+}
+.cursor{display:inline-block;width:4px;height:.95em;background:var(--blue);vertical-align:-.1em;margin-left:4px;animation: blink 1s infinite}
+@keyframes blink{50%{opacity:0}}
+.hero p{color:var(--muted);font-size:18px;max-width:520px;margin: 0 0 32px}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  padding: 14px 22px;border-radius:12px;font-weight:600;font-size:15px;
+  display:inline-flex;align-items:center;gap:8px;transition:var(--transition);
+  border:1px solid transparent;
+}
+.btn-primary{background:var(--grad);color:#06121b;box-shadow:var(--shadow-glow)}
+.btn-primary:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.btn-ghost{border-color:var(--border);background:var(--surface);color:var(--text)}
+.btn-ghost:hover{border-color:var(--blue);box-shadow:0 0 0 4px rgba(0,212,255,.08)}
+
+.hero-symbols{
+  position:relative;height: 460px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;place-items:center;
+}
+.sym{
+  font-size: clamp(48px, 7vw, 96px);
+  display:grid;place-items:center;width:100%;height:100%;
+  color:var(--blue); filter: drop-shadow(0 0 16px rgba(0,212,255,.55));
+  animation: float 6s ease-in-out infinite;
+}
+.sym:nth-child(2){color:var(--violet);filter:drop-shadow(0 0 16px rgba(124,58,237,.55));animation-delay:-1s}
+.sym:nth-child(3){color:var(--gold);filter:drop-shadow(0 0 16px rgba(245,158,11,.55));animation-delay:-2s}
+.sym:nth-child(4){color:#a7f3d0;filter:drop-shadow(0 0 16px rgba(34,211,162,.55));animation-delay:-3s}
+.sym:nth-child(5){color:#fb7185;filter:drop-shadow(0 0 16px rgba(251,113,133,.55));animation-delay:-4s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-14px) scale(1.06)}}
+
+@media(max-width: 880px){
+  .hero{min-height:auto;padding-top:30px;padding-bottom:60px}
+  .hero-grid{grid-template-columns:1fr;gap:30px}
+  .hero-symbols{height:280px}
+}
+
+/* ---------- Cards ---------- */
+.glass{
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: var(--transition);
+}
+.glass:hover{border-color: rgba(0,212,255,.35); box-shadow: 0 10px 40px rgba(0,212,255,.08)}
+
+.modules{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width: 980px){.modules{grid-template-columns:repeat(2,1fr)}}
+@media(max-width: 620px){.modules{grid-template-columns:1fr}}
+.module{
+  position:relative;padding:24px;overflow:hidden;
+}
+.module::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background: var(--accent, var(--grad));
+  box-shadow: 0 0 16px var(--accentGlow, rgba(0,212,255,.5));
+}
+.module .icon{
+  width:54px;height:54px;border-radius:14px;display:grid;place-items:center;
+  background: var(--surface-2);font-size:28px;margin-bottom:16px;
+  transition:var(--transition);
+}
+.module:hover .icon{transform:rotate(-8deg) scale(1.08)}
+.module h3{margin-bottom:6px}
+.module p{color:var(--muted);font-size:14px;margin: 0 0 18px;min-height:42px}
+.module-foot{display:flex;align-items:center;justify-content:space-between}
+.ring{width:48px;height:48px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring .val{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--text)}
+.explore{
+  font-size:13px;font-weight:600;color:var(--blue);
+  padding:8px 14px;border-radius:8px;border:1px solid rgba(0,212,255,.2);
+  transition:var(--transition);
+}
+.explore:hover{background:rgba(0,212,255,.1);box-shadow:0 0 12px rgba(0,212,255,.25)}
+
+/* ---------- Lab tabs ---------- */
+.tabs{
+  position:relative;display:flex;flex-wrap:wrap;gap:4px;padding:6px;
+  background: var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:20px;
+}
+.tab{
+  padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;color:var(--muted);
+  transition:var(--transition);position:relative;z-index:1;
+}
+.tab.active{color:#06121b}
+.tab-indicator{
+  position:absolute;top:6px;left:6px;height:calc(100% - 12px);
+  background:var(--grad);border-radius:10px;transition: all .35s cubic-bezier(.4,0,.2,1);
+  box-shadow: var(--shadow-glow);z-index:0;
+}
+.lab-panel{padding:20px}
+.lab-grid{display:grid;grid-template-columns: 1fr 320px;gap:20px}
+@media(max-width: 900px){.lab-grid{grid-template-columns:1fr}}
+.canvas-wrap{
+  position:relative;background:#06101e;border:1px solid var(--border);border-radius:12px;overflow:hidden;
+  aspect-ratio: 16/10;
+}
+canvas{display:block;width:100%;height:100%}
+.controls{display:flex;flex-direction:column;gap:14px}
+.ctrl{display:flex;flex-direction:column;gap:6px}
+.ctrl label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.ctrl input[type=range]{accent-color:var(--blue)}
+.ctrl input[type=text]{
+  background:var(--bg-2);border:1px solid var(--border);color:var(--text);
+  padding:10px 12px;border-radius:8px;font-family: "JetBrains Mono", ui-monospace, monospace;font-size:14px;
+}
+.ctrl input[type=text]:focus{border-color:var(--blue);outline:none}
+.btn-sm{padding:10px 14px;border-radius:10px;font-weight:600;font-size:13px}
+.readout{
+  background: var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:12px;
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;
+}
+.readout div{display:flex;justify-content:space-between;gap:8px}
+.readout span{color:var(--muted)}
+.readout b{color:var(--blue);font-family: "JetBrains Mono",monospace}
+
+/* Pattern game */
+.game-card{padding:24px;display:flex;flex-direction:column;gap:18px}
+.seq{font-size:32px;font-weight:700;text-align:center;letter-spacing:.1em;font-family:"JetBrains Mono",monospace;
+  padding:24px;border-radius:12px;background: var(--bg-2); border:1px solid var(--border)}
+.seq .q{color:var(--gold)}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.choice{
+  padding:14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);
+  font-weight:600;transition:var(--transition);font-size:15px;
+}
+.choice:hover{border-color:var(--blue);transform:translateY(-1px)}
+.choice.correct{background:rgba(34,211,162,.2);border-color:var(--green);color:#a7f3d0}
+.choice.wrong{background:rgba(255,85,119,.18);border-color:var(--red);color:#fecdd3}
+.diff{display:flex;gap:6px}
+.diff button{
+  padding:6px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;
+}
+.diff button.active{background:var(--grad);color:#06121b;border-color:transparent}
+.game-stats{display:flex;justify-content:space-between;color:var(--muted);font-size:14px}
+.game-stats b{color:var(--gold);font-family:"JetBrains Mono",monospace}
+
+/* Maze controls */
+.maze-info{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.maze-info b{color:var(--blue);font-family:"JetBrains Mono",monospace}
+
+/* ---------- Flip cards ---------- */
+.flip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:1000px){.flip-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.flip-grid{grid-template-columns:1fr}}
+.flip{
+  perspective:1200px;height:220px;cursor:pointer;
+}
+.flip-inner{
+  position:relative;width:100%;height:100%;transition: transform .7s cubic-bezier(.4,0,.2,1);
+  transform-style: preserve-3d;
+}
+.flip.flipped .flip-inner{transform: rotateY(180deg)}
+.flip-face{
+  position:absolute;inset:0;border-radius: var(--radius);
+  backface-visibility: hidden;-webkit-backface-visibility:hidden;
+  padding:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+  background: var(--surface);border:1px solid var(--border);backdrop-filter: blur(12px);
+}
+.flip-face.back{transform: rotateY(180deg);background:linear-gradient(180deg, rgba(0,212,255,.08), rgba(124,58,237,.08));}
+.flip-face .glow-icon{font-size:42px;margin-bottom:10px;filter: drop-shadow(0 0 12px rgba(0,212,255,.6))}
+.flip-face h4{margin:0 0 6px;font-family:"Space Grotesk",sans-serif;font-size:17px}
+.flip-face p{margin:0;color:var(--muted);font-size:13px}
+.flip-face .formula{
+  font-family:"JetBrains Mono",monospace;background:rgba(0,212,255,.1);
+  border:1px solid rgba(0,212,255,.25);padding:6px 10px;border-radius:8px;color:var(--blue);margin-top:8px;font-size:14px;
+}
+
+/* ---------- Dashboard ---------- */
+.xp-bar{
+  background: var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px;
+}
+.xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px}
+.xp-track{height:12px;background:var(--bg-2);border-radius:999px;overflow:hidden;border:1px solid var(--border)}
+.xp-fill{height:100%;background:var(--grad);border-radius:999px;transition: width .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(0,212,255,.5)}
+
+.dash-grid{display:grid;grid-template-columns: 1.2fr .8fr;gap:24px}
+@media(max-width:900px){.dash-grid{grid-template-columns:1fr}}
+.subj-rings{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:520px){.subj-rings{grid-template-columns:repeat(2,1fr)}}
+.subj{padding:18px;text-align:center}
+.subj .big-ring{width:96px;height:96px;margin:0 auto 8px;position:relative}
+.subj .big-ring .val{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:16px}
+.subj small{color:var(--muted);font-size:12px;display:block}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px}
+.badge{
+  padding:14px 8px;border-radius:12px;text-align:center;background:var(--bg-2);border:1px dashed var(--border);
+  filter:grayscale(1);opacity:.5;transition:var(--transition);
+}
+.badge.earned{
+  filter:none;opacity:1;background:linear-gradient(180deg, rgba(245,158,11,.12), rgba(124,58,237,.12));
+  border:1px solid rgba(245,158,11,.4);box-shadow:0 0 18px rgba(245,158,11,.18);
+  animation: popIn .6s cubic-bezier(.4,0,.2,1);
+}
+@keyframes popIn{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+.badge .em{font-size:28px;display:block;margin-bottom:4px}
+.badge small{display:block;color:var(--muted);font-size:11px;line-height:1.3}
+
+/* ---------- Daily challenge ---------- */
+.daily{padding:24px;display:grid;grid-template-columns:1.4fr .6fr;gap:24px}
+@media(max-width:760px){.daily{grid-template-columns:1fr}}
+.daily h3{margin-bottom:6px}
+.daily .q-text{font-size:17px;margin: 14px 0;line-height:1.5}
+.daily .choices{grid-template-columns:1fr 1fr}
+.daily .result{margin-top:12px;padding:12px;border-radius:10px;background:var(--bg-2);border:1px solid var(--border);font-size:14px}
+.timer-box{
+  text-align:center;padding:18px;border-radius:12px;background:var(--bg-2);border:1px solid var(--border);
+  display:flex;flex-direction:column;justify-content:center;gap:6px;
+}
+.timer-box .t{font-family:"JetBrains Mono",monospace;font-size:28px;color:var(--gold);font-weight:700}
+.timer-box small{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.18em}
+.streak{
+  margin-top:12px;padding:10px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(255,85,119,.12));
+  border:1px solid rgba(245,158,11,.3);font-weight:700;text-align:center;
+}
+
+/* ---------- Timeline ---------- */
+.timeline-wrap{position:relative}
+.timeline-nav{position:absolute;top:-56px;right:0;display:flex;gap:8px}
+.tnav{
+  width:40px;height:40px;border-radius:10px;background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;font-size:18px;transition:var(--transition);
+}
+.tnav:hover{border-color:var(--blue);color:var(--blue)}
+.timeline{
+  display:flex;gap:24px;overflow-x:auto;padding: 30px 4px 30px;scroll-behavior:smooth;
+  scrollbar-width: thin;scrollbar-color: var(--blue) transparent;position:relative;
+}
+.timeline::-webkit-scrollbar{height:8px}
+.timeline::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+.timeline::before{
+  content:"";position:absolute;left:0;right:0;top:50%;height:2px;
+  background-image: linear-gradient(90deg, var(--blue) 50%, transparent 50%);
+  background-size: 16px 2px;background-repeat: repeat-x;opacity:.4;z-index:0;
+  animation: dashMove 14s linear infinite;
+}
+@keyframes dashMove{to{background-position: -200px 0}}
+.milestone{
+  flex: 0 0 240px;background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:18px;text-align:center;transition:var(--transition);position:relative;z-index:1;
+  backdrop-filter: blur(12px);
+}
+.milestone:hover, .milestone.active{
+  border-color:var(--blue);box-shadow: 0 0 24px rgba(0,212,255,.25);transform:translateY(-4px);
+}
+.milestone .year{
+  display:inline-block;background:var(--grad);color:#06121b;font-weight:800;
+  padding:4px 10px;border-radius:999px;font-size:12px;margin-bottom:10px;
+}
+.milestone .ic{font-size:28px;margin-bottom:6px}
+.milestone h4{margin:0;font-size:15px;font-family:"Space Grotesk",sans-serif}
+.milestone .who{color:var(--gold);font-size:12px;margin-bottom:6px}
+.milestone p{margin:6px 0 0;color:var(--muted);font-size:12px}
+
+/* ---------- Footer ---------- */
+footer{
+  margin-top: 80px;border-top:1px solid var(--border);padding-bottom: 40px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,.3));
+}
+.marquee{
+  overflow:hidden;border-bottom:1px solid var(--border);padding:14px 0;
+  background: rgba(0,212,255,.04);
+}
+.marquee-track{
+  display:flex;gap:48px;white-space:nowrap;animation: scroll-x 35s linear infinite;
+  font-family:"JetBrains Mono",monospace;color:var(--blue);font-size:14px;
+}
+@keyframes scroll-x{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.foot-inner{max-width:1280px;margin:0 auto;padding:36px 24px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+@media(max-width:680px){.foot-inner{grid-template-columns:1fr;text-align:center}}
+.tagline{font-size:18px;font-family:"Space Grotesk",sans-serif}
+.socials{display:flex;gap:10px;justify-content:flex-end}
+@media(max-width:680px){.socials{justify-content:center}}
+.socials a{
+  width:40px;height:40px;border-radius:10px;background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;transition:var(--transition);
+}
+.socials a:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px)}
+.copyright{text-align:center;color:var(--muted);font-size:13px;padding: 16px}
+#toTop{
+  position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;
+  background:var(--grad);color:#06121b;font-weight:800;font-size:18px;
+  box-shadow: var(--shadow-glow);opacity:0;pointer-events:none;transition:var(--transition);z-index:30;
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{transform:translateY(-3px)}
+
+/* Toast */
+.toast{
+  position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
+  background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(0,212,255,.95));
+  color:#06121b;font-weight:700;padding:12px 20px;border-radius:12px;box-shadow:var(--shadow-glow);
+  opacity:0;pointer-events:none;transition: .35s ease;z-index:100;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
+
+<!-- NAV -->
+<nav class="nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a class="logo" href="#top">
+      <div class="logo-mark" aria-hidden="true">M</div>
+      <span>MindForge<small>Academy</small></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#modules">Modules</a>
+      <a href="#lab">Lab</a>
+      <a href="#concepts">Concepts</a>
+      <a href="#dashboard">Progress</a>
+      <a href="#daily">Daily</a>
+      <a href="#timeline">Timeline</a>
+    </div>
+    <a class="nav-cta" href="#lab">Open Lab</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false"><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Interactive Learning Universe</span>
+      <h1><span class="gradient" id="typer">Think Deeper.</span><span class="cursor" aria-hidden="true"></span></h1>
+      <p>MindForge Academy is a playground for curious minds — six subjects, five live simulations, daily challenges and a dashboard that rewards real thinking, not just clicks.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#lab">▶ Start Learning</a>
+        <a class="btn btn-ghost" href="#modules">Explore Modules</a>
+      </div>
+    </div>
+    <div class="hero-symbols" aria-hidden="true">
+      <div class="sym">∑</div>
+      <div class="sym">π</div>
+      <div class="sym">⚛</div>
+      <div class="sym">♟</div>
+      <div class="sym">👁</div>
+      <div class="sym">🌌</div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section id="modules">
+  <span class="eyebrow">Subject Modules</span>
+  <h2 class="section-title">Six paths through the universe of ideas</h2>
+  <p class="section-sub">Each module blends rigorous theory with hands-on visual practice. Pick a path, or wander them all.</p>
+  <div class="modules" id="modulesGrid"></div>
+</section>
+
+<!-- LAB -->
+<section id="lab">
+  <span class="eyebrow">Visual Learning Lab</span>
+  <h2 class="section-title">Five live simulations. Real formulas. Zero magic.</h2>
+  <p class="section-sub">Move sliders, draw graphs, solve mazes — every interaction earns XP and unlocks badges.</p>
+  <div class="tabs" role="tablist" id="tabs">
+    <div class="tab-indicator" id="tabIndicator"></div>
+    <button class="tab active" role="tab" data-tab="phys">⚛ Physics</button>
+    <button class="tab" role="tab" data-tab="math">∑ Grapher</button>
+    <button class="tab" role="tab" data-tab="pat">🔢 Patterns</button>
+    <button class="tab" role="tab" data-tab="logic">🧠 Logic</button>
+    <button class="tab" role="tab" data-tab="maze">🌀 Maze</button>
+  </div>
+  <div class="glass lab-panel" id="labPanels">
+    <!-- Physics -->
+    <div class="lab-content" data-panel="phys">
+      <div class="lab-grid">
+        <div class="canvas-wrap"><canvas id="physCanvas"></canvas></div>
+        <div class="controls">
+          <div class="ctrl">
+            <label>Launch Angle: <b id="angleVal">45°</b></label>
+            <input type="range" id="angle" min="0" max="90" value="45" />
+          </div>
+          <div class="ctrl">
+            <label>Initial Velocity: <b id="velVal">40 m/s</b></label>
+            <input type="range" id="vel" min="1" max="100" value="40" />
+          </div>
+          <button class="btn btn-primary btn-sm" id="launchBtn">🚀 Launch</button>
+          <div class="readout">
+            <div><span>Max Height</span><b id="maxH">—</b></div>
+            <div><span>Range</span><b id="rng">—</b></div>
+            <div><span>Time of Flight</span><b id="tof">—</b></div>
+            <div><span>g</span><b>9.81</b></div>
+          </div>
+          <p style="color:var(--muted);font-size:12px;margin:0">Kinematics: h = v²sin²θ/(2g), R = v²sin(2θ)/g, T = 2v·sinθ/g</p>
+        </div>
+      </div>
+    </div>
+    <!-- Math -->
+    <div class="lab-content" data-panel="math" hidden>
+      <div class="lab-grid">
+        <div class="canvas-wrap"><canvas id="mathCanvas"></canvas></div>
+        <div class="controls">
+          <div class="ctrl">
+            <label>Function f(x)</label>
+            <input type="text" id="fnInput" value="sin(x)*x" autocomplete="off" spellcheck="false" />
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm" id="plotBtn">📈 Plot</button>
+            <button class="btn btn-ghost btn-sm" id="zoomIn" aria-label="Zoom in">＋</button>
+            <button class="btn btn-ghost btn-sm" id="zoomOut" aria-label="Zoom out">－</button>
+          </div>
+          <div class="readout">
+            <div><span>Domain</span><b id="dom">—</b></div>
+            <div><span>Range</span><b id="rngM">—</b></div>
+            <div><span>Roots</span><b id="roots">—</b></div>
+            <div><span>Peaks</span><b id="peaks">—</b></div>
+          </div>
+          <p style="color:var(--muted);font-size:12px;margin:0">Try: <code style="color:var(--blue)">x^2</code>, <code style="color:var(--blue)">sin(x)</code>, <code style="color:var(--blue)">log(x)</code>, <code style="color:var(--blue)">sqrt(x)</code>, <code style="color:var(--blue)">tan(x)</code>, <code style="color:var(--blue)">exp(x)</code></p>
+        </div>
+      </div>
+    </div>
+    <!-- Patterns -->
+    <div class="lab-content" data-panel="pat" hidden>
+      <div class="game-card">
+        <div class="diff" role="group" aria-label="Difficulty">
+          <button data-d="easy" class="active">Easy</button>
+          <button data-d="medium">Medium</button>
+          <button data-d="hard">Hard</button>
+        </div>
+        <div class="seq" id="patSeq">— — —</div>
+        <div class="choices" id="patChoices"></div>
+        <div class="game-stats">
+          <div>Score: <b id="patScore">0</b></div>
+          <div>Streak: <b id="patStreak">0</b></div>
+          <button class="btn btn-ghost btn-sm" id="patNext">Next Pattern →</button>
+        </div>
+      </div>
+    </div>
+    <!-- Logic -->
+    <div class="lab-content" data-panel="logic" hidden>
+      <div class="game-card">
+        <h3 id="logicQ">Loading puzzle…</h3>
+        <div class="choices" id="logicChoices"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" id="logicHint">💡 Hint</button>
+          <button class="btn btn-ghost btn-sm" id="logicReveal">👁 Reveal</button>
+          <button class="btn btn-primary btn-sm" id="logicNext">Next →</button>
+        </div>
+        <div class="readout" style="grid-template-columns:1fr 1fr 1fr">
+          <div><span>Score</span><b id="logicScore">0</b></div>
+          <div><span>Attempts</span><b id="logicAtt">0</b></div>
+          <div><span>Solved</span><b id="logicSolved">0</b></div>
+        </div>
+        <div id="logicMsg" style="font-size:14px;color:var(--muted);min-height:20px"></div>
+      </div>
+    </div>
+    <!-- Maze -->
+    <div class="lab-content" data-panel="maze" hidden>
+      <div class="lab-grid">
+        <div class="canvas-wrap" style="aspect-ratio:1/1;max-width:520px"><canvas id="mazeCanvas" tabindex="0" aria-label="Maze, use arrow keys"></canvas></div>
+        <div class="controls">
+          <div class="maze-info">
+            <div>Moves: <b id="mazeMoves">0</b></div>
+            <div>Time: <b id="mazeTime">0.0s</b></div>
+          </div>
+          <button class="btn btn-primary btn-sm" id="mazeNew">🌀 New Maze</button>
+          <button class="btn btn-ghost btn-sm" id="mazeSolve">✨ Show Solution</button>
+          <p style="color:var(--muted);font-size:12px;margin:0">Use Arrow keys or WASD to navigate from top-left (green) to bottom-right (gold).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPTS -->
+<section id="concepts">
+  <span class="eyebrow">Flip Concept Cards</span>
+  <h2 class="section-title">Eight cornerstone ideas, one tap away</h2>
+  <p class="section-sub">Click any card (or press Enter) to flip it and reveal the formula and a quick explanation.</p>
+  <div class="flip-grid" id="flipGrid"></div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboard">
+  <span class="eyebrow">Your Progress</span>
+  <h2 class="section-title">Forge your mind. Earn your badges.</h2>
+  <p class="section-sub">Every interaction is tracked locally. No accounts, no servers — your XP lives in your browser.</p>
+  <div class="xp-bar">
+    <div class="xp-top">
+      <div><b style="font-size:18px" id="xpVal">0</b> <span style="color:var(--muted)">XP</span> · <span id="xpLevel">Level 1</span></div>
+      <div style="color:var(--muted);font-size:13px"><span id="xpNext">100 XP to next level</span></div>
+    </div>
+    <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="glass" style="padding:18px">
+      <h3 style="margin-bottom:14px">Subject Mastery</h3>
+      <div class="subj-rings" id="subjRings"></div>
+    </div>
+    <div class="glass">
+      <h3 style="margin:18px 18px 4px">Achievements</h3>
+      <div class="badges" id="badges"></div>
+    </div>
+  </div>
+</section>
+
+<!-- DAILY -->
+<section id="daily">
+  <span class="eyebrow">Daily Challenge</span>
+  <h2 class="section-title">One question. Twenty-four hours. Pure curiosity.</h2>
+  <p class="section-sub">A fresh question every day, drawn from a pool of 30 across all six subjects.</p>
+  <div class="glass daily">
+    <div>
+      <h3>Today's Challenge</h3>
+      <div class="q-text" id="dailyQ">Loading…</div>
+      <div class="choices" id="dailyChoices"></div>
+      <div class="result" id="dailyResult" hidden></div>
+    </div>
+    <div>
+      <div class="timer-box">
+        <small>Next Challenge</small>
+        <div class="t" id="countdown">00:00:00</div>
+      </div>
+      <div class="streak" id="streak">🔥 Day 0 Streak</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <span class="eyebrow">History of Science</span>
+  <h2 class="section-title">Two thousand years of curiosity</h2>
+  <p class="section-sub">From Archimedes' lever to Hawking's black holes — milestones that reshaped how we see the universe.</p>
+  <div class="timeline-wrap">
+    <div class="timeline-nav">
+      <button class="tnav" id="tPrev" aria-label="Scroll timeline left">‹</button>
+      <button class="tnav" id="tNext" aria-label="Scroll timeline right">›</button>
+    </div>
+    <div class="timeline" id="timelineTrack"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marquee"></div>
+  </div>
+  <div class="foot-inner">
+    <div>
+      <div class="tagline">"Knowledge is the most powerful force in the universe."</div>
+      <div style="color:var(--muted);font-size:13px;margin-top:6px">— MindForge Academy</div>
+    </div>
+    <div class="socials" aria-label="Social links">
+      <a href="#" aria-label="Twitter">𝕏</a>
+      <a href="#" aria-label="GitHub">⌥</a>
+      <a href="#" aria-label="YouTube">▶</a>
+      <a href="#" aria-label="Discord">💬</a>
+    </div>
+  </div>
+  <div class="copyright">© 2026 MindForge Academy · Built for curious minds everywhere.</div>
+</footer>
+
+<button id="toTop" aria-label="Back to top">↑</button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   MindForge Academy — single-file interactive learning platform
+============================================================ */
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+
+  /* ---------- State ---------- */
+  const LS_KEY = 'mindforge.v1';
+  const defaultState = {
+    xp: 0,
+    badges: { firstLaunch:false, graphMaster:false, patternHunter:false, logicWizard:false, mazeRunner:false, conceptCollector:false },
+    subjects: { physics:0, math:0, observation:0, manipulation:0, strategy:0, cosmos:0 },
+    patternsCorrect: 0,
+    logicSolved: 0,
+    flippedCards: [],
+    streak: 0,
+    lastDailyDate: null,
+    lastDailyCorrect: null,
+    lastDailyChoice: null,
+  };
+  const state = Object.assign({}, defaultState, JSON.parse(localStorage.getItem(LS_KEY) || '{}'));
+  state.badges = Object.assign({}, defaultState.badges, state.badges||{});
+  state.subjects = Object.assign({}, defaultState.subjects, state.subjects||{});
+  state.flippedCards = state.flippedCards || [];
+  function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+  /* ---------- Toast ---------- */
+  const toast = $('#toast'); let toastT;
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastT);
+    toastT = setTimeout(()=>toast.classList.remove('show'), 2200);
+  }
+
+  /* ---------- XP / Badges ---------- */
+  function addXP(amount, subject){
+    state.xp += amount;
+    if (subject && state.subjects[subject] !== undefined){
+      state.subjects[subject] = Math.min(100, state.subjects[subject] + 5);
+    }
+    save(); renderDashboard();
+  }
+  const BADGE_META = {
+    firstLaunch:    { em:'🚀', name:'First Launch' },
+    graphMaster:    { em:'📈', name:'Graph Master' },
+    patternHunter:  { em:'🔍', name:'Pattern Hunter' },
+    logicWizard:    { em:'🧠', name:'Logic Wizard' },
+    mazeRunner:     { em:'🌀', name:'Maze Runner' },
+    conceptCollector:{em:'📚', name:'Concept Collector' },
+  };
+  function unlock(key){
+    if (state.badges[key]) return;
+    state.badges[key] = true; save(); renderDashboard();
+    showToast(`Badge unlocked: ${BADGE_META[key].em} ${BADGE_META[key].name}`);
+  }
+
+  /* ---------- Particle Background ---------- */
+  (() => {
+    const c = $('#bgCanvas'); const ctx = c.getContext('2d');
+    let w, h, parts;
+    function resize(){
+      w = c.width = innerWidth * devicePixelRatio;
+      h = c.height = innerHeight * devicePixelRatio;
+      c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
+      const n = Math.min(90, Math.floor(innerWidth/16));
+      parts = Array.from({length:n}, () => ({
+        x: Math.random()*w, y: Math.random()*h,
+        vx: (Math.random()-.5)*.3*devicePixelRatio,
+        vy: (Math.random()-.5)*.3*devicePixelRatio,
+        r: Math.random()*1.6+0.4
+      }));
+    }
+    function tick(){
+      ctx.clearRect(0,0,w,h);
+      for(const p of parts){
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>w) p.vx*=-1;
+        if(p.y<0||p.y>h) p.vy*=-1;
+      }
+      ctx.lineWidth = 1;
+      for(let i=0;i<parts.length;i++){
+        const a = parts[i];
+        for(let j=i+1;j<parts.length;j++){
+          const b = parts[j];
+          const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
+          const max = 140*devicePixelRatio;
+          if(d<max){
+            ctx.strokeStyle = `rgba(0,212,255,${(1-d/max)*0.15})`;
+            ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+          }
+        }
+        ctx.fillStyle = 'rgba(124,58,237,.55)';
+        ctx.beginPath(); ctx.arc(a.x, a.y, a.r*devicePixelRatio, 0, Math.PI*2); ctx.fill();
+      }
+      if(!reduce) requestAnimationFrame(tick);
+    }
+    addEventListener('resize', resize);
+    resize(); tick();
+  })();
+
+  /* ---------- Typewriter ---------- */
+  (() => {
+    const el = $('#typer');
+    const words = ['Think Deeper.', 'See Further.', 'Learn Smarter.'];
+    let i=0, j=0, del=false;
+    function step(){
+      const w = words[i];
+      el.textContent = w.slice(0, j);
+      if(!del){
+        j++;
+        if(j>w.length){ del=true; return setTimeout(step, 1400); }
+      } else {
+        j--;
+        if(j===0){ del=false; i=(i+1)%words.length; }
+      }
+      setTimeout(step, del?40:80);
+    }
+    step();
+  })();
+
+  /* ---------- Nav ---------- */
+  const hb = $('#hamburger'), nl = $('#navLinks');
+  hb.addEventListener('click', () => {
+    const open = nl.classList.toggle('open');
+    hb.setAttribute('aria-expanded', open);
+  });
+  nl.addEventListener('click', e => { if(e.target.tagName==='A') nl.classList.remove('open'); });
+
+  /* ---------- Modules ---------- */
+  const MODULES = [
+    { id:'physics', icon:'⚛', title:'Physics', desc:'Motion, forces, energy, waves, electromagnetism & quantum basics.', color:'#00d4ff', glow:'rgba(0,212,255,.6)', progress: state.subjects.physics },
+    { id:'math', icon:'∑', title:'Mathematics', desc:'Algebra, calculus, geometry, statistics & number theory.', color:'#7c3aed', glow:'rgba(124,58,237,.6)', progress: state.subjects.math },
+    { id:'observation', icon:'👁', title:'Observation Skills', desc:'Pattern recognition, the scientific method, data reading.', color:'#f59e0b', glow:'rgba(245,158,11,.6)', progress: state.subjects.observation },
+    { id:'manipulation', icon:'🧪', title:'Experimentation', desc:'Virtual lab scenarios and cause-and-effect reasoning.', color:'#22d3a2', glow:'rgba(34,211,162,.6)', progress: state.subjects.manipulation },
+    { id:'strategy', icon:'♟', title:'Strategic Thinking', desc:'Logic puzzles, game theory and decision trees.', color:'#ff5577', glow:'rgba(255,85,119,.6)', progress: state.subjects.strategy },
+    { id:'cosmos', icon:'🌌', title:'Cosmos & Astronomy', desc:'Solar system, stellar physics and space-time itself.', color:'#a78bfa', glow:'rgba(167,139,250,.6)', progress: state.subjects.cosmos },
+  ];
+  function ringSVG(pct, size=48, stroke=4, color='#00d4ff'){
+    const r = (size-stroke)/2, c = 2*Math.PI*r;
+    const off = c*(1-pct/100);
+    return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="rgba(255,255,255,.08)" stroke-width="${stroke}" fill="none"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="${color}" stroke-width="${stroke}" fill="none"
+        stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"
+        style="transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1); filter:drop-shadow(0 0 4px ${color})"/>
+    </svg>`;
+  }
+  function renderModules(){
+    $('#modulesGrid').innerHTML = MODULES.map(m => `
+      <article class="module glass" style="--accent:${m.color};--accentGlow:${m.glow}">
+        <div class="icon">${m.icon}</div>
+        <h3>${m.title}</h3>
+        <p>${m.desc}</p>
+        <div class="module-foot">
+          <div class="ring">${ringSVG(state.subjects[m.id], 48, 4, m.color)}<div class="val">${state.subjects[m.id]}%</div></div>
+          <a href="#lab" class="explore">Explore →</a>
+        </div>
+      </article>`).join('');
+  }
+
+  /* ---------- Tabs ---------- */
+  function setupTabs(){
+    const tabs = $$('#tabs .tab'), ind = $('#tabIndicator');
+    function move(t){
+      const r = t.getBoundingClientRect();
+      const pr = t.parentElement.getBoundingClientRect();
+      ind.style.width = r.width+'px';
+      ind.style.height = r.height+'px';
+      ind.style.transform = `translate(${r.left-pr.left-6}px, ${r.top-pr.top-6}px)`;
+    }
+    tabs.forEach(t => {
+      t.addEventListener('click', () => {
+        tabs.forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        move(t);
+        const id = t.dataset.tab;
+        $$('.lab-content').forEach(p => p.hidden = p.dataset.panel !== id);
+        if(id==='maze') drawMaze();
+        if(id==='math') drawGraph();
+      });
+    });
+    requestAnimationFrame(()=> move(tabs[0]));
+    addEventListener('resize', () => move($('#tabs .tab.active')));
+  }
+
+  /* ---------- Physics Simulator ---------- */
+  const physCanvas = $('#physCanvas');
+  let physCtx, physState = { running:false, t:0, trail:[] };
+  function sizeCanvas(c){
+    const r = c.getBoundingClientRect();
+    c.width = r.width*devicePixelRatio; c.height = r.height*devicePixelRatio;
+  }
+  function drawPhysScene(){
+    const c = physCanvas; const ctx = physCtx = c.getContext('2d');
+    sizeCanvas(c);
+    const W=c.width, H=c.height;
+    ctx.clearRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=1;
+    const step = 40*devicePixelRatio;
+    for(let x=0;x<W;x+=step){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(let y=0;y<H;y+=step){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    // ground
+    ctx.strokeStyle='rgba(0,212,255,.6)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(0,H-20*devicePixelRatio); ctx.lineTo(W,H-20*devicePixelRatio); ctx.stroke();
+    // axes labels
+    ctx.fillStyle='rgba(154,166,199,.7)'; ctx.font = `${11*devicePixelRatio}px JetBrains Mono, monospace`;
+    ctx.fillText('x (m)', W-50*devicePixelRatio, H-6*devicePixelRatio);
+    ctx.save(); ctx.translate(10*devicePixelRatio, 30*devicePixelRatio); ctx.fillText('y (m)', 0, 0); ctx.restore();
+  }
+  function physLaunch(){
+    const angle = +$('#angle').value, v = +$('#vel').value;
+    const g = 9.81;
+    const rad = angle * Math.PI/180;
+    const T = 2*v*Math.sin(rad)/g;
+    const R = v*v*Math.sin(2*rad)/g;
+    const Hm = (v*v*Math.sin(rad)**2)/(2*g);
+    $('#maxH').textContent = Hm.toFixed(2)+' m';
+    $('#rng').textContent  = R.toFixed(2)+' m';
+    $('#tof').textContent  = T.toFixed(2)+' s';
+
+    const c = physCanvas, ctx = c.getContext('2d');
+    const W=c.width, H=c.height;
+    const margin = 30*devicePixelRatio;
+    const maxRange = Math.max(R, 1);
+    const maxHeight = Math.max(Hm, 1);
+    const scaleX = (W - margin*2) / maxRange;
+    const scaleY = (H - margin*2) / (maxHeight*1.2);
+    const scale = Math.min(scaleX, scaleY);
+    const x0 = margin, y0 = H - 20*devicePixelRatio;
+    physState.trail = [];
+    let start = null;
+    function frame(ts){
+      if(!start) start = ts;
+      const t = Math.min(T, (ts-start)/1000 * 1.2); // slight slowdown
+      drawPhysScene();
+      // trail
+      ctx.lineWidth = 2*devicePixelRatio;
+      for(let i=1;i<physState.trail.length;i++){
+        const a = physState.trail[i-1], b = physState.trail[i];
+        ctx.strokeStyle = `rgba(0,212,255,${i/physState.trail.length})`;
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+      const x = v*Math.cos(rad)*t;
+      const y = v*Math.sin(rad)*t - 0.5*g*t*t;
+      const px = x0 + x*scale, py = y0 - y*scale;
+      physState.trail.push({x:px,y:py});
+      // ball
+      const grad = ctx.createRadialGradient(px,py,1,px,py,12*devicePixelRatio);
+      grad.addColorStop(0,'#f59e0b'); grad.addColorStop(1,'rgba(245,158,11,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(px,py,12*devicePixelRatio,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(px,py,4*devicePixelRatio,0,Math.PI*2); ctx.fill();
+      if(t<T) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+    addXP(10,'physics'); unlock('firstLaunch');
+  }
+  $('#angle').addEventListener('input', e => $('#angleVal').textContent = e.target.value+'°');
+  $('#vel').addEventListener('input', e => $('#velVal').textContent = e.target.value+' m/s');
+  $('#launchBtn').addEventListener('click', physLaunch);
+
+  /* ---------- Math Grapher ---------- */
+  const mathCanvas = $('#mathCanvas');
+  let zoom = 20; // pixels per unit
+  function safeEval(expr, x){
+    // Whitelist
+    if(!/^[\sxX0-9+\-*/^().,a-z]+$/.test(expr)) throw new Error('bad chars');
+    let e = expr.replace(/\^/g,'**').replace(/\bX\b/g,'x');
+    const allowed = ['sin','cos','tan','asin','acos','atan','sqrt','abs','log','log10','log2','exp','floor','ceil','round','sign','pow','PI','E','min','max'];
+    // ensure only allowed identifiers
+    const ids = e.match(/[a-zA-Z_][a-zA-Z_0-9]*/g) || [];
+    for(const id of ids){
+      if(id==='x') continue;
+      if(!allowed.includes(id)) throw new Error('forbidden: '+id);
+    }
+    const mapped = e.replace(/\b(sin|cos|tan|asin|acos|atan|sqrt|abs|exp|floor|ceil|round|sign|pow|min|max)\b/g, 'Math.$1')
+                    .replace(/\blog10\b/g,'Math.log10').replace(/\blog2\b/g,'Math.log2').replace(/\blog\b/g,'Math.log')
+                    .replace(/\bPI\b/g,'Math.PI').replace(/\bE\b/g,'Math.E');
+    // eslint-disable-next-line no-new-func
+    const fn = new Function('x', `return (${mapped});`);
+    return fn(x);
+  }
+  function drawGraph(){
+    const c = mathCanvas, ctx = c.getContext('2d');
+    sizeCanvas(c);
+    const W=c.width, H=c.height;
+    const cx=W/2, cy=H/2;
+    const z = zoom*devicePixelRatio;
+    ctx.fillStyle='#06101e'; ctx.fillRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.lineWidth=1;
+    for(let x=cx%z; x<W; x+=z){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(let y=cy%z; y<H; y+=z){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    // axes
+    ctx.strokeStyle='rgba(255,255,255,.3)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+    // tick labels
+    ctx.fillStyle='rgba(154,166,199,.7)'; ctx.font = `${10*devicePixelRatio}px JetBrains Mono, monospace`;
+    for(let i=-20;i<=20;i++){
+      if(i===0) continue;
+      const x = cx + i*z;
+      if(x>0&&x<W){ ctx.fillText(i, x+2, cy+12*devicePixelRatio); }
+      const y = cy - i*z;
+      if(y>0&&y<H){ ctx.fillText(i, cx+4, y-2); }
+    }
+    const expr = $('#fnInput').value.trim();
+    if(!expr) return;
+    let lastY = null, roots=[], peaks=[], minY=Infinity, maxY=-Infinity;
+    const grad = ctx.createLinearGradient(0,0,W,0);
+    grad.addColorStop(0,'#00d4ff'); grad.addColorStop(1,'#7c3aed');
+    ctx.strokeStyle = grad; ctx.lineWidth = 2.4*devicePixelRatio; ctx.shadowColor='rgba(0,212,255,.6)'; ctx.shadowBlur=8;
+    ctx.beginPath();
+    let started=false; let prev=null;
+    const samples = [];
+    for(let px=0; px<=W; px+=1){
+      const xVal = (px-cx)/z;
+      let y;
+      try{ y = safeEval(expr, xVal); }catch(e){ ctx.shadowBlur=0; return; }
+      if(!isFinite(y)){ started=false; prev=null; continue; }
+      const py = cy - y*z;
+      samples.push({x:xVal,y});
+      if(py>=-1e5 && py<=1e5){
+        if(!started){ ctx.moveTo(px,py); started=true; } else { ctx.lineTo(px,py); }
+        // roots
+        if(prev && Math.sign(prev.y) !== Math.sign(y) && Math.sign(prev.y)!==0){
+          roots.push(((prev.x+xVal)/2).toFixed(2));
+        }
+        if(y<minY) minY=y; if(y>maxY) maxY=y;
+      } else started=false;
+      prev = {x:xVal,y};
+    }
+    ctx.stroke(); ctx.shadowBlur=0;
+    // detect local peaks/valleys
+    for(let i=2;i<samples.length-2;i++){
+      const a=samples[i-2].y, b=samples[i-1].y, m=samples[i].y, d=samples[i+1].y, e=samples[i+2].y;
+      if((m>b&&m>d&&b>a&&d>e) || (m<b&&m<d&&b<a&&d<e)){
+        peaks.push(samples[i].x.toFixed(2));
+      }
+    }
+    const xMin = (-cx/z).toFixed(1), xMax = ((W-cx)/z).toFixed(1);
+    $('#dom').textContent = `[${xMin}, ${xMax}]`;
+    $('#rngM').textContent = isFinite(minY)?`[${minY.toFixed(1)}, ${maxY.toFixed(1)}]`:'—';
+    $('#roots').textContent = roots.length ? roots.slice(0,4).join(', ') : 'none';
+    $('#peaks').textContent = peaks.length ? peaks.slice(0,3).join(', ') : 'none';
+  }
+  $('#plotBtn').addEventListener('click', ()=>{ drawGraph(); addXP(10,'math'); unlock('graphMaster'); });
+  $('#zoomIn').addEventListener('click', ()=>{ zoom = Math.min(160, zoom*1.25); drawGraph(); });
+  $('#zoomOut').addEventListener('click', ()=>{ zoom = Math.max(4, zoom/1.25); drawGraph(); });
+  mathCanvas.addEventListener('wheel', e => { e.preventDefault(); zoom = Math.max(4, Math.min(160, zoom * (e.deltaY>0?0.9:1.1))); drawGraph(); }, {passive:false});
+  $('#fnInput').addEventListener('keydown', e => { if(e.key==='Enter'){ drawGraph(); addXP(10,'math'); unlock('graphMaster'); }});
+
+  /* ---------- Pattern Game ---------- */
+  let patDiff = 'easy';
+  let patAnswer = null;
+  function genPattern(diff){
+    const pools = {
+      easy: [
+        () => { const a=rand(1,10), d=rand(2,9); const s=[a,a+d,a+2*d,a+3*d,a+4*d]; return seq(s); },
+        () => { const a=rand(1,5), r=rand(2,4); const s=[a,a*r,a*r*r,a*r*r*r,a*r*r*r*r]; return seq(s); },
+        () => { const s=[1,4,9,16,25]; return seq(s); },
+        () => { const s=[2,4,6,8,10]; return seq(s); },
+        () => { const s=[5,10,15,20,25]; return seq(s); },
+      ],
+      medium: [
+        () => { const s=[1,1,2,3,5,8]; return seq(s); },
+        () => { const s=[1,8,27,64,125]; return seq(s); },
+        () => { const s=[2,3,5,7,11,13]; return seq(s); },
+        () => { const s=[1,3,6,10,15,21]; return seq(s); }, // triangular
+        () => { const s=[3,6,12,24,48]; return seq(s); },
+      ],
+      hard: [
+        () => { const s=[1,2,4,7,11,16]; return seq(s); }, // +1,+2,+3
+        () => { const s=[2,5,10,17,26,37]; return seq(s); }, // n^2+1
+        () => { const s=[1,4,13,40,121]; return seq(s); }, // *3+1
+        () => { const s=[2,6,12,20,30,42]; return seq(s); }, // n(n+1)
+        () => { const s=[1,11,21,1211,111221]; return seq(s); }, // look-and-say
+      ],
+    };
+    function seq(arr){
+      const idx = rand(2, arr.length-2);
+      const answer = arr[idx];
+      const display = arr.map((v,i)=> i===idx ? '?' : v);
+      const distractors = new Set([answer]);
+      while(distractors.size<4){ distractors.add(answer + (rand(0,1)?1:-1) * rand(1, Math.max(5, Math.floor(Math.abs(answer)/2)+2))); }
+      const choices = [...distractors].sort(()=>Math.random()-.5);
+      return { display, answer, choices };
+    }
+    function rand(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+    const p = pools[diff][Math.floor(Math.random()*pools[diff].length)]();
+    return p;
+  }
+  function renderPattern(){
+    const p = genPattern(patDiff);
+    patAnswer = p.answer;
+    $('#patSeq').innerHTML = p.display.map(v => v==='?' ? `<span class="q">?</span>` : v).join(', ');
+    $('#patChoices').innerHTML = p.choices.map(c => `<button class="choice" data-v="${c}">${c}</button>`).join('');
+    $$('#patChoices .choice').forEach(b => b.addEventListener('click', () => {
+      const v = +b.dataset.v;
+      if(v===patAnswer){
+        b.classList.add('correct');
+        const s = +$('#patScore').textContent + 1;
+        const st = +$('#patStreak').textContent + 1;
+        $('#patScore').textContent = s; $('#patStreak').textContent = st;
+        state.patternsCorrect++; save();
+        addXP(10,'observation');
+        if(state.patternsCorrect>=3) unlock('patternHunter');
+        setTimeout(renderPattern, 900);
+      } else {
+        b.classList.add('wrong');
+        $('#patStreak').textContent = 0;
+        $$('#patChoices .choice').forEach(x => +x.dataset.v===patAnswer && x.classList.add('correct'));
+      }
+    }));
+  }
+  $$('#labPanels .diff button').forEach(b => b.addEventListener('click', () => {
+    $$('#labPanels .diff button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); patDiff = b.dataset.d; renderPattern();
+  }));
+  $('#patNext').addEventListener('click', renderPattern);
+
+  /* ---------- Logic Puzzles ---------- */
+  const PUZZLES = [
+    { q:'A bat and a ball cost $1.10. The bat costs $1 more than the ball. How much does the ball cost?',
+      options:['$0.05','$0.10','$0.15','$1.00'], a:0,
+      hint:'If the ball is $0.10, the bat is $1.10 — total would be $1.20.',
+      explain:'Ball = $0.05, Bat = $1.05. Together $1.10, with the bat $1.00 more.'},
+    { q:'If a brick weighs 1 kg plus half a brick, how much does the brick weigh?',
+      options:['1.5 kg','2 kg','3 kg','1 kg'], a:1,
+      hint:'Let B = brick. B = 1 + B/2.', explain:'Solving B = 1 + B/2 → B/2 = 1 → B = 2 kg.'},
+    { q:'You see a boat full of people but no person is on the boat. How?',
+      options:['It is invisible','All are married','It is a model','It sank'], a:1,
+      hint:'Word play.', explain:'No-one is single — they are all married couples.'},
+    { q:'Which number does not belong: 2, 3, 5, 9, 11, 13?',
+      options:['2','9','11','13'], a:1,
+      hint:'All others share a property.', explain:'9 is the only composite number — the rest are prime.'},
+    { q:'A clock shows 3:15. What is the angle between hour and minute hands?',
+      options:['0°','7.5°','15°','90°'], a:1,
+      hint:'Hour hand moves 0.5° per minute.', explain:'Minute at 90°, hour at 3·30 + 15·0.5 = 97.5°. Difference = 7.5°.'},
+    { q:'Three switches downstairs control three bulbs upstairs. One trip upstairs allowed.',
+      options:['Impossible','Use heat','Random guess','Ask someone'], a:1,
+      hint:'Bulbs have a property besides light.', explain:'Turn on switch A, wait, turn off, turn on B. Upstairs: lit=B, warm=A, cold=C.'},
+    { q:'If two\'s company and three\'s a crowd, what are four and five?',
+      options:['Eight','A party','Nine','A team'], a:2,
+      hint:'It is a math joke.', explain:'4 + 5 = 9.'},
+    { q:'A farmer has 17 sheep. All but 9 die. How many are left?',
+      options:['8','9','17','0'], a:1,
+      hint:'Read carefully.', explain:'"All but 9 die" means 9 remain.'},
+    { q:'Which weighs more: a kilogram of feathers or a kilogram of steel?',
+      options:['Feathers','Steel','Same','Depends'], a:2,
+      hint:'Pay attention to units.', explain:'Both are exactly one kilogram.'},
+    { q:'Continue the sequence: O, T, T, F, F, S, S, E, ?',
+      options:['T','N','E','F'], a:1,
+      hint:'First letters of something familiar.', explain:'One, Two, Three… so the 9th letter is N for Nine.'},
+    { q:'You enter a dark room with one match. There is a candle, an oil lamp, and a fireplace. What do you light first?',
+      options:['Candle','Match','Lamp','Fireplace'], a:1,
+      hint:'You need to do one thing before lighting anything.', explain:'You light the match first.'},
+    { q:'If you rearrange the letters "CIFAIPC" you get the name of a:',
+      options:['Country','Ocean','City','Animal'], a:1,
+      hint:'It is very large and blue.', explain:'Pacific — an ocean.'},
+    { q:'A man lives on the 20th floor. Each morning he takes the elevator down. Coming back, he takes it to the 10th floor and walks the rest — except on rainy days. Why?',
+      options:['He is short','Phobia','Exercise','Broken lift'], a:0,
+      hint:'On rainy days he has something with him.', explain:'He is too short to reach the 20th-floor button; with an umbrella he can.'},
+    { q:'How many times can you subtract 5 from 25?',
+      options:['5','1','25','Infinite'], a:1,
+      hint:'After the first time, what number do you have?', explain:'Only once — after that you subtract from 20, not 25.'},
+    { q:'Which is heavier: 1 kg of cotton or 1 kg of iron — on the Moon?',
+      options:['Cotton','Iron','Same','Cotton floats'], a:2,
+      hint:'Mass vs weight — but ratio is the same.', explain:'Both have the same mass and the same Moon weight.'},
+  ];
+  let logicIdx = -1, logicCur = null;
+  function loadLogic(){
+    let next = Math.floor(Math.random()*PUZZLES.length);
+    if(next===logicIdx) next = (next+1)%PUZZLES.length;
+    logicIdx = next;
+    logicCur = PUZZLES[next];
+    $('#logicQ').textContent = logicCur.q;
+    $('#logicChoices').innerHTML = logicCur.options.map((o,i)=>`<button class="choice" data-i="${i}">${o}</button>`).join('');
+    $('#logicMsg').textContent = '';
+    $$('#logicChoices .choice').forEach(b => b.addEventListener('click', () => {
+      const i = +b.dataset.i;
+      $('#logicAtt').textContent = +$('#logicAtt').textContent + 1;
+      if(i===logicCur.a){
+        b.classList.add('correct');
+        $('#logicScore').textContent = +$('#logicScore').textContent + 1;
+        $('#logicSolved').textContent = +$('#logicSolved').textContent + 1;
+        state.logicSolved++; save();
+        addXP(10,'strategy');
+        $('#logicMsg').innerHTML = `✅ <b>Correct!</b> ${logicCur.explain}`;
+        if(state.logicSolved>=2) unlock('logicWizard');
+      } else {
+        b.classList.add('wrong');
+        $('#logicMsg').textContent = '❌ Not quite — try the Hint button.';
+      }
+      $$('#logicChoices .choice').forEach(x => x.disabled = true);
+    }));
+  }
+  $('#logicHint').addEventListener('click', () => { if(logicCur) $('#logicMsg').textContent = '💡 ' + logicCur.hint; });
+  $('#logicReveal').addEventListener('click', () => { if(logicCur) $('#logicMsg').innerHTML = '👁 ' + logicCur.explain; });
+  $('#logicNext').addEventListener('click', loadLogic);
+
+  /* ---------- Maze ---------- */
+  const MAZE_N = 15;
+  let maze, player, mazeStart, mazeTimerStart, mazeTimerId, mazeMoves, mazeSolved;
+  function genMaze(n){
+    // Recursive backtracker
+    const g = Array.from({length:n}, () => Array.from({length:n}, () => ({n:true,e:true,s:true,w:true,v:false})));
+    const stack = [[0,0]]; g[0][0].v = true;
+    while(stack.length){
+      const [x,y] = stack[stack.length-1];
+      const dirs = [['n',0,-1,'s'],['e',1,0,'w'],['s',0,1,'n'],['w',-1,0,'e']].sort(()=>Math.random()-.5);
+      let moved=false;
+      for(const [d,dx,dy,od] of dirs){
+        const nx=x+dx, ny=y+dy;
+        if(nx<0||ny<0||nx>=n||ny>=n||g[ny][nx].v) continue;
+        g[y][x][d]=false; g[ny][nx][od]=false; g[ny][nx].v=true;
+        stack.push([nx,ny]); moved=true; break;
+      }
+      if(!moved) stack.pop();
+    }
+    return g;
+  }
+  function drawMaze(){
+    const c = $('#mazeCanvas'); const ctx = c.getContext('2d');
+    sizeCanvas(c);
+    const W=c.width, H=c.height;
+    ctx.fillStyle='#06101e'; ctx.fillRect(0,0,W,H);
+    const cs = Math.min(W,H)/MAZE_N;
+    // start & end fills
+    ctx.fillStyle = 'rgba(34,211,162,.25)'; ctx.fillRect(0,0,cs,cs);
+    ctx.fillStyle = 'rgba(245,158,11,.3)'; ctx.fillRect((MAZE_N-1)*cs,(MAZE_N-1)*cs,cs,cs);
+    // walls
+    ctx.strokeStyle = 'rgba(0,212,255,.7)'; ctx.lineWidth = 2*devicePixelRatio;
+    ctx.shadowColor='rgba(0,212,255,.4)'; ctx.shadowBlur=4;
+    for(let y=0;y<MAZE_N;y++){
+      for(let x=0;x<MAZE_N;x++){
+        const cell = maze[y][x], px=x*cs, py=y*cs;
+        if(cell.n){ ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px+cs,py); ctx.stroke(); }
+        if(cell.w){ ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px,py+cs); ctx.stroke(); }
+        if(cell.e && x===MAZE_N-1){ ctx.beginPath(); ctx.moveTo(px+cs,py); ctx.lineTo(px+cs,py+cs); ctx.stroke(); }
+        if(cell.s && y===MAZE_N-1){ ctx.beginPath(); ctx.moveTo(px,py+cs); ctx.lineTo(px+cs,py+cs); ctx.stroke(); }
+      }
+    }
+    ctx.shadowBlur=0;
+    // player
+    const px = player.x*cs + cs/2, py = player.y*cs + cs/2;
+    const grad = ctx.createRadialGradient(px,py,1,px,py,cs*.6);
+    grad.addColorStop(0,'#7c3aed'); grad.addColorStop(1,'rgba(124,58,237,0)');
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(px,py,cs*.6,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(px,py,cs*.22,0,Math.PI*2); ctx.fill();
+  }
+  function bfs(){
+    const N=MAZE_N;
+    const q=[[0,0]], prev=Array.from({length:N},()=>Array(N).fill(null));
+    prev[0][0]=[0,0];
+    while(q.length){
+      const [x,y]=q.shift();
+      if(x===N-1&&y===N-1) break;
+      const c=maze[y][x];
+      const neigh=[[!c.n,x,y-1],[!c.e,x+1,y],[!c.s,x,y+1],[!c.w,x-1,y]];
+      for(const [open,nx,ny] of neigh){
+        if(open && nx>=0&&ny>=0&&nx<N&&ny<N && !prev[ny][nx]){
+          prev[ny][nx]=[x,y]; q.push([nx,ny]);
+        }
+      }
+    }
+    const path=[]; let cur=[N-1,N-1];
+    while(cur && !(cur[0]===0&&cur[1]===0)){ path.push(cur); cur=prev[cur[1]][cur[0]]; }
+    path.push([0,0]); return path.reverse();
+  }
+  function animateSolution(){
+    const path = bfs(); let i=0;
+    const c=$('#mazeCanvas'); const ctx=c.getContext('2d');
+    const cs = Math.min(c.width,c.height)/MAZE_N;
+    function step(){
+      drawMaze();
+      ctx.strokeStyle = 'rgba(245,158,11,.9)'; ctx.lineWidth=4*devicePixelRatio;
+      ctx.shadowColor='rgba(245,158,11,.7)'; ctx.shadowBlur=10;
+      ctx.beginPath();
+      ctx.moveTo(path[0][0]*cs+cs/2, path[0][1]*cs+cs/2);
+      for(let k=1;k<=i;k++) ctx.lineTo(path[k][0]*cs+cs/2, path[k][1]*cs+cs/2);
+      ctx.stroke(); ctx.shadowBlur=0;
+      i++;
+      if(i<path.length) setTimeout(step, 40);
+    }
+    step();
+  }
+  function newMaze(){
+    maze = genMaze(MAZE_N); player={x:0,y:0};
+    mazeMoves=0; mazeSolved=false;
+    mazeTimerStart = Date.now();
+    if(mazeTimerId) clearInterval(mazeTimerId);
+    mazeTimerId = setInterval(()=>{ if(!mazeSolved) $('#mazeTime').textContent = ((Date.now()-mazeTimerStart)/1000).toFixed(1)+'s'; }, 100);
+    $('#mazeMoves').textContent=0; drawMaze();
+  }
+  function move(dx,dy){
+    if(mazeSolved) return;
+    const c = maze[player.y][player.x];
+    if(dx===1 && !c.e) player.x++;
+    else if(dx===-1 && !c.w) player.x--;
+    else if(dy===1 && !c.s) player.y++;
+    else if(dy===-1 && !c.n) player.y--;
+    else return;
+    mazeMoves++; $('#mazeMoves').textContent=mazeMoves;
+    drawMaze();
+    if(player.x===MAZE_N-1 && player.y===MAZE_N-1){
+      mazeSolved=true; clearInterval(mazeTimerId);
+      addXP(10,'strategy'); unlock('mazeRunner');
+      showToast(`Maze solved in ${mazeMoves} moves!`);
+    }
+  }
+  addEventListener('keydown', e => {
+    if(document.querySelector('.lab-content[data-panel="maze"]')?.hidden) return;
+    const k=e.key.toLowerCase();
+    if(['arrowup','w'].includes(k)){ e.preventDefault(); move(0,-1); }
+    else if(['arrowdown','s'].includes(k)){ e.preventDefault(); move(0,1); }
+    else if(['arrowleft','a'].includes(k)){ e.preventDefault(); move(-1,0); }
+    else if(['arrowright','d'].includes(k)){ e.preventDefault(); move(1,0); }
+  });
+  $('#mazeNew').addEventListener('click', newMaze);
+  $('#mazeSolve').addEventListener('click', animateSolution);
+
+  /* ---------- Flip Cards ---------- */
+  const CONCEPTS = [
+    { id:'newton', icon:'🍎', title:"Newton's Second Law", formula:'F = m · a', back:'Net force on an object equals its mass times its acceleration. Double the force, double the acceleration.'},
+    { id:'pyth', icon:'📐', title:'Pythagorean Theorem', formula:'a² + b² = c²', back:'In a right triangle, the square of the hypotenuse equals the sum of squares of the other two sides.'},
+    { id:'ohm', icon:'⚡', title:"Ohm's Law", formula:'V = I · R', back:'Voltage across a resistor equals the current through it times its resistance. Foundation of every circuit.'},
+    { id:'fib', icon:'🌀', title:'Fibonacci Sequence', formula:'F(n) = F(n-1) + F(n-2)', back:'1, 1, 2, 3, 5, 8, 13… Each term is the sum of the previous two. Appears in shells, flowers, galaxies.'},
+    { id:'snell', icon:'🔦', title:'Refraction of Light', formula:'n₁·sinθ₁ = n₂·sinθ₂', back:'Snell\'s Law: light bends when crossing media because its speed changes — denser medium, slower light.'},
+    { id:'prob', icon:'🎲', title:'Probability Basics', formula:'P(A) = favorable / total', back:'For equally likely outcomes, probability is favorable outcomes divided by the size of the sample space.'},
+    { id:'nash', icon:'♟', title:'Nash Equilibrium', formula:'no profitable unilateral deviation', back:'A strategy profile where no player can improve their payoff by changing strategy alone.'},
+    { id:'kepler', icon:'🪐', title:"Kepler's Third Law", formula:'T² ∝ a³', back:'The square of a planet\'s orbital period is proportional to the cube of its semi-major axis.'},
+  ];
+  function renderFlips(){
+    $('#flipGrid').innerHTML = CONCEPTS.map(c => `
+      <div class="flip ${state.flippedCards.includes(c.id)?'flipped':''}" tabindex="0" role="button" aria-label="${c.title}, click to flip" data-id="${c.id}">
+        <div class="flip-inner">
+          <div class="flip-face front">
+            <div class="glow-icon">${c.icon}</div>
+            <h4>${c.title}</h4>
+            <p style="margin-top:6px;font-size:12px;color:var(--blue)">Tap to reveal</p>
+          </div>
+          <div class="flip-face back">
+            <h4>${c.title}</h4>
+            <p>${c.back}</p>
+            <div class="formula">${c.formula}</div>
+          </div>
+        </div>
+      </div>`).join('');
+    $$('#flipGrid .flip').forEach(el => {
+      const flip = () => {
+        el.classList.toggle('flipped');
+        const id = el.dataset.id;
+        if(!state.flippedCards.includes(id)){
+          state.flippedCards.push(id); save();
+          addXP(10, 'observation');
+          if(state.flippedCards.length>=8) unlock('conceptCollector');
+        }
+      };
+      el.addEventListener('click', flip);
+      el.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flip(); }});
+    });
+  }
+
+  /* ---------- Dashboard ---------- */
+  function renderDashboard(){
+    // XP
+    const lvl = Math.floor(state.xp/100)+1;
+    const inLvl = state.xp%100;
+    $('#xpVal').textContent = state.xp;
+    $('#xpLevel').textContent = 'Level '+lvl;
+    $('#xpNext').textContent = (100-inLvl)+' XP to Level '+(lvl+1);
+    $('#xpFill').style.width = inLvl+'%';
+    // Subject rings
+    const colors = {physics:'#00d4ff',math:'#7c3aed',observation:'#f59e0b',manipulation:'#22d3a2',strategy:'#ff5577',cosmos:'#a78bfa'};
+    const names = {physics:'Physics',math:'Math',observation:'Observation',manipulation:'Experiment',strategy:'Strategy',cosmos:'Cosmos'};
+    $('#subjRings').innerHTML = Object.keys(state.subjects).map(k => `
+      <div class="subj glass">
+        <div class="big-ring">${ringSVG(state.subjects[k], 96, 7, colors[k])}<div class="val">${state.subjects[k]}%</div></div>
+        <small>${names[k]}</small>
+      </div>`).join('');
+    // Badges
+    $('#badges').innerHTML = Object.keys(BADGE_META).map(k => `
+      <div class="badge ${state.badges[k]?'earned':''}">
+        <span class="em">${BADGE_META[k].em}</span>
+        <small>${BADGE_META[k].name}</small>
+      </div>`).join('');
+    // Also refresh module ring values
+    renderModules();
+  }
+
+  /* ---------- Daily Challenge ---------- */
+  const DAILY = [
+    { q:'What force keeps planets in orbit around the Sun?', o:['Magnetism','Gravity','Friction','Nuclear'], a:1, e:'Gravity — the same force that pulls an apple to the ground.'},
+    { q:'What is the derivative of sin(x)?', o:['cos(x)','-cos(x)','-sin(x)','tan(x)'], a:0, e:'d/dx sin(x) = cos(x).'},
+    { q:'How many planets are in our Solar System?', o:['7','8','9','10'], a:1, e:'Eight, since Pluto was reclassified as a dwarf planet in 2006.'},
+    { q:'What is 7 × 8?', o:['54','56','64','58'], a:1, e:'7 × 8 = 56.'},
+    { q:'Which gas do plants absorb for photosynthesis?', o:['Oxygen','Nitrogen','CO₂','Hydrogen'], a:2, e:'Plants absorb carbon dioxide and release oxygen.'},
+    { q:'What does DNA stand for?', o:['Deoxyribonucleic acid','Diatomic neutral atom','Double nuclear array','Distant node aggregate'], a:0, e:'Deoxyribonucleic acid carries genetic instructions.'},
+    { q:'Speed of light in vacuum (approx)?', o:['3×10⁵ m/s','3×10⁸ m/s','3×10¹⁰ m/s','3×10⁶ m/s'], a:1, e:'c ≈ 299,792,458 m/s ≈ 3×10⁸ m/s.'},
+    { q:'Next number: 2, 6, 12, 20, ?', o:['28','30','32','42'], a:1, e:'n(n+1) sequence: 5×6 = 30.'},
+    { q:'Which planet has the most moons (known 2024)?', o:['Jupiter','Saturn','Uranus','Neptune'], a:1, e:'Saturn overtook Jupiter with 146 confirmed moons.'},
+    { q:'Solve: log₁₀(1000) = ?', o:['2','3','10','100'], a:1, e:'10³ = 1000, so log₁₀(1000) = 3.'},
+    { q:'What particle has no electric charge?', o:['Proton','Electron','Neutron','Positron'], a:2, e:'Neutrons are electrically neutral.'},
+    { q:'Sum of angles in a triangle?', o:['90°','180°','270°','360°'], a:1, e:'Always 180° in Euclidean geometry.'},
+    { q:'Who proposed the heliocentric model?', o:['Ptolemy','Copernicus','Galileo','Newton'], a:1, e:'Copernicus published De revolutionibus in 1543.'},
+    { q:'sin(90°) = ?', o:['0','0.5','1','-1'], a:2, e:'sin(90°) = 1.'},
+    { q:'Which is a vector quantity?', o:['Mass','Time','Velocity','Energy'], a:2, e:'Velocity has both magnitude and direction.'},
+    { q:'What is 2¹⁰?', o:['1000','1024','512','2048'], a:1, e:'2¹⁰ = 1024 — basis of "kilobyte" in computing.'},
+    { q:'Closest star to Earth (besides the Sun)?', o:['Sirius','Alpha Centauri A','Proxima Centauri','Barnard\'s Star'], a:2, e:'Proxima Centauri, about 4.24 light-years away.'},
+    { q:'Pattern: 1, 1, 2, 3, 5, 8, ?', o:['11','12','13','15'], a:2, e:'Fibonacci: 5+8 = 13.'},
+    { q:'How many continents are there?', o:['5','6','7','8'], a:2, e:'Seven by the common convention.'},
+    { q:'What does H₂O represent?', o:['Hydrogen','Water','Helium','Hydroxide'], a:1, e:'Two hydrogens and one oxygen — water.'},
+    { q:'A prime number divisible only by:', o:['Itself','1 and itself','Even numbers','Any factor'], a:1, e:'A prime > 1 is divisible only by 1 and itself.'},
+    { q:'What unit measures electric current?', o:['Volt','Ohm','Ampere','Watt'], a:2, e:'Current is measured in amperes (A).'},
+    { q:'Who developed General Relativity?', o:['Bohr','Einstein','Hawking','Newton'], a:1, e:'Einstein published General Relativity in 1915.'},
+    { q:'Probability of rolling 6 on a fair die?', o:['1/2','1/3','1/6','1/12'], a:2, e:'One favorable outcome out of six.'},
+    { q:'What galaxy do we live in?', o:['Andromeda','Triangulum','Milky Way','Sombrero'], a:2, e:'The Milky Way — a barred spiral galaxy.'},
+    { q:'sqrt(144) = ?', o:['10','11','12','14'], a:2, e:'12 × 12 = 144.'},
+    { q:'Which is NOT a state of matter?', o:['Solid','Liquid','Plasma','Energy'], a:3, e:'Energy is not a state of matter.'},
+    { q:'Earth\'s orbital period?', o:['365.25 days','30 days','24 hours','100 years'], a:0, e:'Earth orbits the Sun in ~365.25 days.'},
+    { q:'Which scientist formulated three laws of motion?', o:['Galileo','Newton','Einstein','Bohr'], a:1, e:'Isaac Newton, in Principia (1687).'},
+    { q:'Binary 1010 = decimal?', o:['8','10','12','5'], a:1, e:'8 + 0 + 2 + 0 = 10.'},
+  ];
+  function dayIndex(){
+    const d = new Date(); const start = new Date(d.getFullYear(),0,0);
+    return Math.floor((d - start) / 86400000);
+  }
+  function todayKey(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+  function renderDaily(){
+    const idx = dayIndex() % DAILY.length;
+    const q = DAILY[idx];
+    $('#dailyQ').textContent = q.q;
+    const already = state.lastDailyDate === todayKey();
+    $('#dailyChoices').innerHTML = q.o.map((o,i)=>`<button class="choice" data-i="${i}" ${already?'disabled':''}>${o}</button>`).join('');
+    $('#streak').textContent = `🔥 Day ${state.streak} Streak`;
+    if(already){
+      const r=$('#dailyResult'); r.hidden=false;
+      const correct = state.lastDailyCorrect;
+      r.innerHTML = `${correct?'✅':'❌'} <b>${correct?'Correct!':'Not quite.'}</b> ${q.e}`;
+      $$('#dailyChoices .choice').forEach(b => {
+        const i=+b.dataset.i;
+        if(i===q.a) b.classList.add('correct');
+        else if(i===state.lastDailyChoice) b.classList.add('wrong');
+      });
+    } else {
+      $('#dailyResult').hidden = true;
+      $$('#dailyChoices .choice').forEach(b => b.addEventListener('click', () => {
+        const i=+b.dataset.i; const correct = i===q.a;
+        state.lastDailyDate = todayKey();
+        state.lastDailyCorrect = correct;
+        state.lastDailyChoice = i;
+        if(correct){ state.streak = (state.streak||0)+1; addXP(10,'observation'); }
+        else { state.streak = 0; }
+        save(); renderDaily();
+      }));
+    }
+  }
+  function tickCountdown(){
+    const d = new Date(); const tomorrow = new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);
+    const s = Math.max(0, Math.floor((tomorrow-d)/1000));
+    const hh = String(Math.floor(s/3600)).padStart(2,'0');
+    const mm = String(Math.floor((s%3600)/60)).padStart(2,'0');
+    const ss = String(s%60).padStart(2,'0');
+    $('#countdown').textContent = `${hh}:${mm}:${ss}`;
+  }
+  setInterval(tickCountdown, 1000); tickCountdown();
+
+  /* ---------- Timeline ---------- */
+  const MILESTONES = [
+    { y:'287 BC', who:'Archimedes', t:'Principle of Buoyancy', ic:'🛁', d:'Discovered upthrust equals displaced fluid weight.'},
+    { y:'1609', who:'Galileo', t:'Telescopic Astronomy', ic:'🔭', d:'Observed Jupiter\'s moons, supporting heliocentrism.'},
+    { y:'1687', who:'Newton', t:'Laws of Motion & Gravity', ic:'🍎', d:'Published Principia — unified terrestrial and celestial physics.'},
+    { y:'1831', who:'Faraday', t:'Electromagnetic Induction', ic:'⚡', d:'Showed a changing magnetic field induces current.'},
+    { y:'1859', who:'Darwin', t:'On the Origin of Species', ic:'🌿', d:'Proposed evolution by natural selection.'},
+    { y:'1865', who:'Maxwell', t:'Electromagnetic Theory', ic:'📡', d:'Unified electricity, magnetism and light in four equations.'},
+    { y:'1898', who:'Curie', t:'Discovery of Radium', ic:'☢', d:'Pioneered research on radioactivity; two Nobel Prizes.'},
+    { y:'1905', who:'Einstein', t:'Special Relativity', ic:'🚀', d:'E = mc² and a new understanding of space and time.'},
+    { y:'1913', who:'Bohr', t:'Quantum Atom', ic:'⚛', d:'Electrons orbit nuclei in quantized energy levels.'},
+    { y:'1974', who:'Hawking', t:'Black Hole Radiation', ic:'🕳', d:'Black holes emit thermal radiation and slowly evaporate.'},
+  ];
+  function renderTimeline(){
+    $('#timelineTrack').innerHTML = MILESTONES.map(m => `
+      <article class="milestone" tabindex="0">
+        <div class="year">${m.y}</div>
+        <div class="ic">${m.ic}</div>
+        <div class="who">${m.who}</div>
+        <h4>${m.t}</h4>
+        <p>${m.d}</p>
+      </article>`).join('');
+    const tl = $('#timelineTrack');
+    $$('.milestone', tl).forEach(el => el.addEventListener('click', () => {
+      $$('.milestone.active', tl).forEach(x=>x.classList.remove('active'));
+      el.classList.add('active');
+    }));
+    $('#tPrev').addEventListener('click', ()=> tl.scrollBy({left:-280, behavior:'smooth'}));
+    $('#tNext').addEventListener('click', ()=> tl.scrollBy({left: 280, behavior:'smooth'}));
+  }
+
+  /* ---------- Marquee ---------- */
+  function renderMarquee(){
+    const items = ['E=mc²','F=ma','∫f(x)dx','a²+b²=c²','P(A∩B)=P(A)·P(B)','v=u+at','λ=h/p','F=Gm₁m₂/r²'];
+    const html = items.map(i => `<span>${i}</span>`).join('') ;
+    $('#marquee').innerHTML = html + html;
+  }
+
+  /* ---------- Back to top ---------- */
+  const toTop = $('#toTop');
+  addEventListener('scroll', () => {
+    toTop.classList.toggle('show', scrollY > 600);
+  });
+  toTop.addEventListener('click', () => scrollTo({top:0, behavior:'smooth'}));
+
+  /* ---------- Subtle parallax ---------- */
+  if(!reduce){
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      const syms = $$('.sym');
+      syms.forEach((s,i) => s.style.transform = `translateY(${y*-0.05*(i%3+1)/3}px)`);
+    }, {passive:true});
+  }
+
+  /* ---------- Init ---------- */
+  renderModules(); setupTabs();
+  drawPhysScene(); drawGraph();
+  renderPattern(); loadLogic(); newMaze();
+  renderFlips(); renderDashboard();
+  renderDaily(); renderTimeline(); renderMarquee();
+
+  addEventListener('resize', () => {
+    drawPhysScene(); drawGraph(); drawMaze();
+  });
+})();
+</script>
+</body>
+</html>
